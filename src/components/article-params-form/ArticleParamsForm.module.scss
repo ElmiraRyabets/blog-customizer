@@ -13,7 +13,7 @@
 }
 
 .form {
-	display: flex;
+	display: grid;
 	flex-shrink: 0;
 	flex-direction: column;
 	box-sizing: border-box;
@@ -29,4 +29,14 @@
 	display: flex;
 	justify-content: space-between;
 	margin-top: auto;
+}
+
+.overlay {
+	visibility: hidden;
+	position: fixed;
+	inset: 0;
+}
+
+.overlay_open {
+	visibility: visible;
 }
