@@ -1,5 +1,9 @@
 import { createRoot } from 'react-dom/client';
-import { StrictMode, CSSProperties, useState, SyntheticEvent } from 'react';
+import {
+	StrictMode,
+	CSSProperties,
+	useState
+} from 'react';
 import clsx from 'clsx';
 
 import { Article } from './components/article/Article';
@@ -16,24 +20,21 @@ const domNode = document.getElementById('root') as HTMLDivElement;
 const root = createRoot(domNode);
 
 const App = () => {
-	const [appState, setAppState] =
+	const [articleState, setArticleState] =
 		useState<ArticleStateType>(defaultArticleState);
-
 	return (
 		<main
 			className={clsx(styles.main)}
 			style={
 				{
-					'--font-family': appState.fontFamilyOption.value,
-					'--font-size': appState.fontSizeOption.value,
-					'--font-color': appState.fontColor.value,
-					'--container-width': appState.contentWidth.value,
-					'--bg-color': appState.backgroundColor.value,
+					'--font-family': articleState.fontFamilyOption.value,
+					'--font-size': articleState.fontSizeOption.value,
+					'--font-color': articleState.fontColor.value,
+					'--container-width': articleState.contentWidth.value,
+					'--bg-color': articleState.backgroundColor.value,
 				} as CSSProperties
 			}>
-			<ArticleParamsForm
-				setAppState={setAppState}
-			/>
+			<ArticleParamsForm setArticleState={setArticleState} />
 			<Article />
 		</main>
 	);

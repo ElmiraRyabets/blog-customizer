@@ -2,7 +2,7 @@ import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
 
 import styles from './ArticleParamsForm.module.scss';
-import { SyntheticEvent, useState } from 'react';
+import { SyntheticEvent, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 
 import { Text } from 'src/ui/text';
@@ -21,7 +21,7 @@ import { Separator } from 'src/ui/separator';
 import { RadioGroup } from 'src/ui/radio-group';
 
 type ArticleProps = {
-	setAppState: (type: ArticleStateType) => void;
+	setArticleState: (type: ArticleStateType) => void;
 };
 
 export const ArticleParamsForm = (props: ArticleProps) => {
@@ -38,37 +38,44 @@ export const ArticleParamsForm = (props: ArticleProps) => {
 		[styles.container_open]: isFormOpened,
 	});
 
-	//Стили для оверлея
-	const overlayStyle = clsx({
-		[styles.overlay]: true,
-		[styles.overlay_open]: isFormOpened,
-	});
+	//При нажатии кнопки "Применить" обновляем состояние приложения
+	function submit(e: SyntheticEvent) {
+		e.preventDefault();
+		props.setArticleState(formState);
+	}
+
+	//При нажатии кнопки "Сбросить" обновляем состояние приложения к дефолтному
+	function reset(e: SyntheticEvent) {
+		e.preventDefault();
+		props.setArticleState(defaultArticleState);
+		setFormState(defaultArticleState);
+	}
+
+	const asideRef = useRef<HTMLElement>(null);
+
+	useEffect(() => {
+		function handleClickOutside(event: MouseEvent) {
+			if (
+				asideRef.current &&
+				!asideRef.current.contains(event.target as Node)
+			) {
+				setIsFormOpened(false);
+			}
+		}
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, [isFormOpened]);
 
 	//Управление состоянием формы
 	const switchFormState = () => {
 		setIsFormOpened(isFormOpened === false ? true : false);
 	};
 
-	//При нажатии кнопки "Применить" обновляем состояние приложения
-	function submit(e: SyntheticEvent) {
-		e.preventDefault();
-		props.setAppState(formState);
-	}
-
-	//При нажатии кнопки "Сбросить" обновляем состояние приложения к дефолтному
-	function reset(e: SyntheticEvent) {
-		e.preventDefault();
-		props.setAppState(defaultArticleState);
-		setFormState(defaultArticleState);
-	}
-
+	console.log (isFormOpened);
 	return (
 		<>
 			<ArrowButton isOpen={isFormOpened} onClick={switchFormState} />
-			<div
-				onClick={() => setIsFormOpened(false)}
-				className={overlayStyle}></div>
-			<aside className={containerStyle}>
+			<aside className={containerStyle}  ref={asideRef}>
 				<form className={styles.form} onSubmit={submit} onReset={reset}>
 					<Text size={31} weight={800} uppercase={true} align='left'>
 						Задайте параметры
@@ -103,7 +110,7 @@ export const ArticleParamsForm = (props: ArticleProps) => {
 						}}
 					/>
 					<Select
-						title='Цвет шрифта'
+						title='цвет шрифта'
 						selected={formState.fontColor}
 						options={fontColors}
 						onChange={(selected: OptionType) => {
@@ -118,7 +125,7 @@ export const ArticleParamsForm = (props: ArticleProps) => {
 					/>
 					<Separator />
 					<Select
-						title='Цвет фона'
+						title='цвет фона'
 						selected={formState.backgroundColor}
 						options={backgroundColors}
 						onChange={(selected: OptionType) => {
@@ -132,7 +139,7 @@ export const ArticleParamsForm = (props: ArticleProps) => {
 						}}
 					/>
 					<Select
-						title='Ширина контента'
+						title='ширина контента'
 						selected={formState.contentWidth}
 						options={contentWidthArr}
 						onChange={(selected: OptionType) => {
