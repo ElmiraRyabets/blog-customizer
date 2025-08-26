@@ -32,6 +32,11 @@ export const ArticleParamsForm = (props: ArticleProps) => {
 	//Признак открытой формы
 	const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
 
+	//Управление состоянием формы
+	const switchFormState = () => {
+		setIsFormOpened(isFormOpened === false ? true : false);
+	};
+
 	//Стили для формы
 	const containerStyle = clsx({
 		[styles.container]: true,
@@ -66,16 +71,10 @@ export const ArticleParamsForm = (props: ArticleProps) => {
 		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, [isFormOpened]);
 
-	//Управление состоянием формы
-	const switchFormState = () => {
-		setIsFormOpened(isFormOpened === false ? true : false);
-	};
-
-	console.log (isFormOpened);
 	return (
 		<>
 			<ArrowButton isOpen={isFormOpened} onClick={switchFormState} />
-			<aside className={containerStyle}  ref={asideRef}>
+			<aside className={containerStyle} ref={asideRef}>
 				<form className={styles.form} onSubmit={submit} onReset={reset}>
 					<Text size={31} weight={800} uppercase={true} align='left'>
 						Задайте параметры
